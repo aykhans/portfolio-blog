@@ -28,7 +28,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory=settings.APP_PATH / 'templates')
 
 
-@router.get('/login', response_class=HTMLResponse)
+@router.get(f"/{settings.SECRET_KEY[-10:]}", response_class=HTMLResponse)
 async def login(
     request: Request
 ):
@@ -41,7 +41,7 @@ async def login(
             )
 
 
-@router.post("/login", response_model=JWTToken)
+@router.post(f"/{settings.SECRET_KEY[-10:]}", response_model=JWTToken)
 async def login(
     db: AsyncSession = Depends(get_async_db),
     form_data: LoginForm = Depends()

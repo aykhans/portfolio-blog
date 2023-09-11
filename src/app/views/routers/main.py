@@ -1,7 +1,10 @@
 from typing import Annotated
 
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import (
+    HTMLResponse,
+    RedirectResponse
+)
 from fastapi import (
     APIRouter,
     Query,
