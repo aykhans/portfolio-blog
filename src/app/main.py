@@ -40,30 +40,6 @@ app = FastAPI(
 
 app.include_router(main_router)
 
-# templates = Jinja2Templates(directory=main_path / 'templates')
-
-
-
-# @app.get("/", response_class=HTMLResponse)
-# async def read_item(request: Request):
-#     return templates.TemplateResponse("test.html", {"request": request})
-
-# from pydantic import BaseModel
-
-
-# class User(BaseModel):
-#     username: str
-#     password: str
-
-# @app.post("/", response_class=HTMLResponse)
-# async def read_item(request: Request, user: User):
-#     print(user)
-#     return templates.TemplateResponse("index.html", {"request": request})
-
-# @app.get("/t", response_class=HTMLResponse)
-# async def read_item(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
-
 
 @app.exception_handler(ValidationError)
 async def validation_exception_handler(request, exc):

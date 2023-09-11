@@ -22,6 +22,7 @@ python-slugify = "^8.0.1"
 pillow = "^10.0.0"
 aiofiles = "^23.2.1"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+fastapi-mail = "^1.4.1"
 
 
 [build-system]

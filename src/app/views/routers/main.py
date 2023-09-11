@@ -1,12 +1,13 @@
 from typing import Annotated
 
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import (
     APIRouter,
     Query,
     Request,
-    Depends
+    Depends,
+    BackgroundTasks
 )
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +15,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import crud
 from app.core.config import settings
 from app.schemas import ListPostInTemplate
+from app.schemas.main import SendEmail
+from app.utils.email import send_email_notification
 from app.views.depends import get_async_db
 
 
@@ -28,6 +31,31 @@ async def home(request: Request):
                 'index.html',
                 {"request": request}
             )
+
+
+@router.post('/send-email')
+async def send_email(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    form_data: SendEmail = Depends()
+):
+
+    body = f"name: {form_data.name}\n"\
+            f"email: {form_data.email}\n"\
+            f"phone: {form_data.phone}\n"\
+            f"message: {form_data.message}"
+
+    background_tasks.add_task(
+        send_email_notification(
+            subject = f"Portfolio Blog (by {form_data.email})",
+            body = body
+        )
+    )
+
+    return RedirectResponse(
+        str(request.url_for('home')) + '#contact',
+        status_code=303
+    )
 
 
 @router.get('/blog', response_class=HTMLResponse)

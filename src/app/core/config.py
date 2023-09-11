@@ -1,6 +1,11 @@
-from pydantic import PostgresDsn
-from pydantic_settings import BaseSettings
+from typing import Optional
 from pathlib import Path
+
+from pydantic_settings import BaseSettings
+from pydantic import (
+    EmailStr,
+    PostgresDsn
+)
 
 
 class Settings(BaseSettings):
@@ -35,6 +40,15 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB
         )
+
+    SMTP_SSL_TLS: bool = True
+    SMTP_PORT: int = 587
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_USER: EmailStr
+    SMTP_PASSWORD: str
+
+    EMAILS_FROM_NAME: str = PROJECT_NAME
+    EMAIL_RECIPIENTS: list[EmailStr] = []
 
 
 settings = Settings()

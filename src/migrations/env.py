@@ -23,9 +23,6 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 
 ########### Custom Config ###########
-from os import getenv
-print('-'*100)
-print(getenv('POSTGRES_USER'))
 
 from app.core.config import settings
 from app.db.base import Base
