@@ -4,7 +4,7 @@ from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -45,7 +45,7 @@ async def login(
 async def login(
     db: AsyncSession = Depends(get_async_db),
     form_data: LoginForm = Depends()
-) -> Any:
+):
 
     user = await crud.user.authenticate(
         db, email=form_data.email, password=form_data.password
@@ -68,10 +68,9 @@ async def login(
     }
 
 
-# @router.get("/test")
-# def test(
-#     request: Request,
-#     user: UserModel = Depends(get_current_active_superuser),
-# ) -> Any:
+@router.get("/admin")
+def admin(
+    request: Request
+):
 
-#     return user.email
+    return FileResponse(settings.STATIC_FOLDER / 'just_a.gif')

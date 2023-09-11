@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     APP_PATH: Path = MAIN_PATH / 'app' # path to app folder
     MEDIA_FOLDER: Path = Path('media') # name of media folder
     MEDIA_PATH: Path = MAIN_PATH / MEDIA_FOLDER # path to media folder
+    STATIC_FOLDER_NAME: Path = Path('static') # name of static folder
+    STATIC_FOLDER: Path = MAIN_PATH / STATIC_FOLDER_NAME # path to static folder
 
     FILE_FOLDERS: dict[str, Path] = {
         'post_images': Path('post_images'),

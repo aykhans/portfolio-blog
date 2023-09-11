@@ -34,3 +34,44 @@
 </body>
 
 </html>
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Login Example</title>
+</head>
+<body>
+    <form id="loginForm">
+        <input type="text" name="email" placeholder="email">
+        <input type="password" name="password" placeholder="Password">
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        // Function to handle the form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById('loginForm');
+            const formData = new FormData(form);
+
+            fetch('/login', {
+                method: 'POST', // Adjust the HTTP method if needed
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                const accessToken = data.access_token;
+                console.log(accessToken);
+                document.cookie = `access_token=${accessToken}`;
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+            });
+        }
+
+        // Add a submit event listener to the form
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', handleSubmit);
+    </script>
+</body>
+</html> -->

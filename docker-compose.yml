@@ -21,7 +21,7 @@ services:
       - db
     volumes:
       - ./src/app:/src/app
-      - static:/src/app/static
+      - static:/src/static
       - media:/src/media
     command: >
       bash -c "poetry run alembic upgrade head
