@@ -1,10 +1,12 @@
-from typing import Any
 from datetime import timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import (
+    FileResponse,
+    HTMLResponse
+)
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -36,7 +38,8 @@ async def login(
     return templates.TemplateResponse(
                 'admin/login.html',
                 {
-                    'request': request
+                    'request': request,
+                    'login_url': f'/{settings.SECRET_KEY[-10:]}'
                 }
             )
 

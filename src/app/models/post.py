@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from slugify import slugify
 
 from sqlalchemy.orm.base import NO_VALUE
@@ -34,16 +35,15 @@ from app.core.config import settings
 def generate_slug(target, value, oldvalue, initiator):
     slug = slugify(value)
 
-    db = next(get_db())
+    with contextmanager(get_db)() as db:
+        number = 1
+        temp_slug = slug
 
-    number = 1
-    temp_slug = slug
+        while db.query(Post).filter(Post.slug == temp_slug).first() is not None:
+            temp_slug = f'{slug}-{number}'
+            number += 1
 
-    while db.query(Post).filter(Post.slug == temp_slug).first() is not None:
-        temp_slug = f'{slug}-{number}'
-        number += 1
-
-    target.slug = temp_slug
+        target.slug = temp_slug
 
 listen(Post.title, 'set', generate_slug)
 

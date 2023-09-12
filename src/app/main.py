@@ -11,7 +11,7 @@ from app.schemas.login import LoginForm
 from app.schemas.post import Post, PostCreate, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.user import User, UserCreate
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from app.views.depends import get_async_db, handle_image
 
 from typing import Annotated, Any
@@ -44,6 +44,11 @@ app.include_router(main_router)
 @app.exception_handler(ValidationError)
 async def validation_exception_handler(request, exc):
     return await request_validation_exception_handler(request, exc)
+
+
+@app.exception_handler(404)
+async def custom_404_handler(_, __):
+    return FileResponse(settings.STATIC_FOLDER / '404.jpg')
 
 
 # @app.post("/login", response_model=JWTToken)

@@ -15,6 +15,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         obj = await db.execute(q)
         return obj.scalar_one_or_none()
 
+    def sync_get_by_email(self, db: Session, *, email: str) -> Optional[User]:
+        q = select(self.model).where(self.model.email == email)
+        obj = db.execute(q)
+        return obj.scalar_one_or_none()
+
     async def create(self, db: Session, *, obj_in: UserCreate) -> User:
         db_obj = User(
             email=obj_in.email,
@@ -26,6 +31,20 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         db.add(db_obj)
         await db.commit()
         await db.refresh(db_obj)
+
+        return db_obj
+
+    def sync_create(self, db: Session, *, obj_in: UserCreate) -> User:
+        db_obj = User(
+            email=obj_in.email,
+            hashed_password=get_password_hash(obj_in.password),
+            username=obj_in.username,
+            is_superuser=obj_in.is_superuser,
+        )
+
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
 
         return db_obj
 

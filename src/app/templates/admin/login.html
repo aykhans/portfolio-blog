@@ -13,27 +13,52 @@
     <div class="container" style="margin-top: 10rem;">
         <div class="row">
             <div class="col-md-10 col-lg-4 mx-auto">
-                <form>
+                <form id="loginForm">
                     <div class="form-outline mb-4">
-                        <input type="email" id="form2Example1" class="form-control" />
+                        <input type="email" id="form2Example1" name="email" class="form-control" />
                         <label class="form-label" for="form2Example1">Email address</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                        <input type="password" id="form2Example2" class="form-control" />
+                        <input type="password" id="form2Example2" name="password" class="form-control" />
                         <label class="form-label" for="form2Example2">Password</label>
                     </div>
 
-                    <button type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
+                    <button type="sumbit" class="btn btn-primary btn-block mb-4">Sign in</button>
                 </form>
             </div>
         </div>
     </div>
 
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById('loginForm');
+            const formData = new FormData(form);
+            console.log(formData);
+
+            fetch('{{login_url}}', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                const accessToken = data.access_token;
+                localStorage.setItem('accessToken', accessToken)
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+            });
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', handleSubmit);
+    </script>
 </body>
 
 </html>
+
 
 <!-- <!DOCTYPE html>
 <html>
@@ -46,32 +71,5 @@
         <input type="password" name="password" placeholder="Password">
         <button type="submit">Login</button>
     </form>
-
-    <script>
-        // Function to handle the form submission
-        function handleSubmit(event) {
-            event.preventDefault();
-            const form = document.getElementById('loginForm');
-            const formData = new FormData(form);
-
-            fetch('/login', {
-                method: 'POST', // Adjust the HTTP method if needed
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                const accessToken = data.access_token;
-                console.log(accessToken);
-                document.cookie = `access_token=${accessToken}`;
-            })
-            .catch(error => {
-                console.error('Login error:', error);
-            });
-        }
-
-        // Add a submit event listener to the form
-        const loginForm = document.getElementById('loginForm');
-        loginForm.addEventListener('submit', handleSubmit);
-    </script>
 </body>
 </html> -->

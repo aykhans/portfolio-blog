@@ -1,7 +1,10 @@
 from typing import Any
 
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
-from sqlalchemy import DateTime, Column
+from sqlalchemy import (
+    DateTime,
+    Column
+)
 from sqlalchemy.sql import func
 
 

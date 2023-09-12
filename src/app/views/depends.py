@@ -1,8 +1,12 @@
 import io
-from pathlib import Path
-from typing import Annotated, Generator
+from typing import (
+    Annotated,
+    Generator
+)
+
 from PIL import Image
 from jose import jwt
+
 from pydantic import ValidationError
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,7 +24,10 @@ from fastapi.security import OAuth2PasswordBearer
 from app.models.user import User as UserModel
 from app.core import security
 from app.core.config import settings
-from app.db.session import SessionLocal, AsyncSessionLocal
+from app.db.session import (
+    SessionLocal,
+    AsyncSessionLocal
+)
 from app import crud
 from app import schemas
 from app.utils.image_operations import (
@@ -31,22 +38,15 @@ from app.utils.image_operations import (
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl='/login')
 
-def get_db() -> Generator:
-    try:
-        db = SessionLocal()
-        yield db
 
-    finally:
-        db.close()
+def get_db() -> Generator:
+    with SessionLocal() as db:
+        yield db
 
 
 async def get_async_db() -> Generator:
-    try:
-        async with AsyncSessionLocal() as async_db:
-            yield async_db
-
-    finally:
-        await async_db.close()
+    async with AsyncSessionLocal() as async_db:
+        yield await async_db
 
 
 async def get_access_token_from_cookie(access_token: Annotated[str, Cookie()]):

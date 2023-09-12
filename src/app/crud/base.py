@@ -1,7 +1,18 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import (
+    Any,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union
+)
+
+from pydantic import BaseModel
 
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
+
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
@@ -35,6 +46,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         q = select(self.model).offset(skip).limit(limit).order_by(self.model.id.desc())
         obj = await db.execute(q)
+        return obj.scalars()
+
+    def sync_get_multi(
+        self, db: Session, *, skip: int = 0, limit: int = 100
+    ) -> List[ModelType]:
+
+        q = select(self.model).offset(skip).limit(limit).order_by(self.model.id.desc())
+        obj = db.execute(q)
         return obj.scalars()
 
     async def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:

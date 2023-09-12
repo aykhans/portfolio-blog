@@ -19,7 +19,7 @@ from app import crud
 from app.core.config import settings
 from app.schemas import ListPostInTemplate
 from app.schemas.main import SendEmail
-from app.utils.email import send_email_notification
+from app.utils.email_utils import send_email_notification
 from app.views.depends import get_async_db
 
 

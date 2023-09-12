@@ -10,7 +10,8 @@ from .user import (
     User,
     UserCreate,
     UserInDBBase,
-    UserUpdate
+    UserUpdate,
+    UserBase
 )
 from .login import (
     JWTToken,
