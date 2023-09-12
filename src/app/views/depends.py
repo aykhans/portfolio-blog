@@ -46,15 +46,19 @@ def get_db() -> Generator:
 
 async def get_async_db() -> Generator:
     async with AsyncSessionLocal() as async_db:
-        yield await async_db
+        yield async_db
 
 
-async def get_access_token_from_cookie(access_token: Annotated[str, Cookie()]):
+async def get_access_token_from_cookie_or_die(access_token: Annotated[str, Cookie()]) -> str:
     return access_token
 
 
-async def get_current_user(
-    db: AsyncSession = Depends(get_async_db), token: str = Depends(get_access_token_from_cookie)
+async def get_access_token_from_cookie_or_none(access_token: Annotated[str, Cookie()] = None) -> str | None:
+    return access_token
+
+
+async def get_current_user_or_die(
+    db: AsyncSession = Depends(get_async_db), token: str = Depends(get_access_token_from_cookie_or_die)
 ) -> UserModel:
 
     try:
@@ -79,8 +83,33 @@ async def get_current_user(
     return user
 
 
-async def get_current_active_user(
-    current_user: UserModel = Depends(get_current_user),
+async def get_current_user_or_none(
+    db: AsyncSession = Depends(get_async_db), token: str | None = Depends(get_access_token_from_cookie_or_none)
+) -> UserModel | None:
+
+    if token is None: return None
+
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+        )
+        token_data = schemas.JWTTokenPayload(**payload)
+
+    except (jwt.JWTError, ValidationError):
+        return None
+
+    if  token_data.sub is None:
+        return None
+
+    user = await crud.user.get_by_email(db, email=token_data.sub)
+    if user is None:
+        return None
+
+    return user
+
+
+async def get_current_active_user_or_die(
+    current_user: UserModel = Depends(get_current_user_or_die),
 ) -> UserModel:
 
     if current_user.is_active is False:
@@ -88,14 +117,36 @@ async def get_current_active_user(
     return current_user
 
 
-async def get_current_active_superuser(
-    current_user: UserModel = Depends(get_current_active_user),
+async def get_current_active_user_or_none(
+    current_user: UserModel | None = Depends(get_current_user_or_none),
+) -> UserModel | None:
+
+    if current_user is None: return None
+
+    if current_user.is_active is False:
+        return None
+    return current_user
+
+
+async def get_current_active_superuser_or_die(
+    current_user: UserModel = Depends(get_current_active_user_or_die),
 ) -> UserModel:
 
     if current_user.is_superuser is False:
         raise HTTPException(
             status_code=400, detail="The user doesn't have enough privileges"
         )
+    return current_user
+
+
+async def get_current_active_superuser_or_none(
+    current_user: UserModel | None = Depends(get_current_active_user_or_none),
+) -> UserModel | None:
+
+    if current_user is None: return None
+
+    if current_user.is_superuser is False:
+        return None
     return current_user
 
 
@@ -115,8 +166,8 @@ async def handle_image(image: UploadFile = File(...)) -> str:
         await save_image(
             image = pil_image,
             image_path = settings.MEDIA_PATH /
-            settings.FILE_FOLDERS['post_images'] /
-            unique_image_name
+                settings.FILE_FOLDERS['post_images'] /
+                unique_image_name
         )
 
     except Exception as e:

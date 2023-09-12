@@ -13,6 +13,7 @@
     <div class="container" style="margin-top: 10rem;">
         <div class="row">
             <div class="col-md-10 col-lg-4 mx-auto">
+                <p id="responseError"></p>
                 <form id="loginForm">
                     <div class="form-outline mb-4">
                         <input type="email" id="form2Example1" name="email" class="form-control" />
@@ -42,13 +43,26 @@
                 method: 'POST',
                 body: formData,
             })
-            .then(response => response.json())
+            .then(response => {
+                if (response.status === 200) {
+                    console.log(response.json)
+                    return response.json();
+                } else if (response.status === 400) {
+                    throw new Error('Email or password incorrect.');
+                }
+                else {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+            })
             .then(data => {
+                console.log(data)
                 const accessToken = data.access_token;
-                localStorage.setItem('accessToken', accessToken)
+                var now = new Date();
+                now.setDate(now.getDate() + 30);
+                document.cookie = `access_token=${accessToken};expires=${now.toUTCString()};path=/`;
             })
             .catch(error => {
-                console.error('Login error:', error);
+                document.getElementById('responseError').innerHTML = error.message;
             });
         }
 
@@ -58,18 +72,3 @@
 </body>
 
 </html>
-
-
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Login Example</title>
-</head>
-<body>
-    <form id="loginForm">
-        <input type="text" name="email" placeholder="email">
-        <input type="password" name="password" placeholder="Password">
-        <button type="submit">Login</button>
-    </form>
-</body>
-</html> -->

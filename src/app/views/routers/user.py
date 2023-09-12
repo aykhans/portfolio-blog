@@ -21,7 +21,8 @@ from app.schemas import JWTToken, LoginForm
 from app.core.config import settings
 from app.views.depends import (
     get_async_db,
-    get_current_active_superuser
+    get_current_active_superuser_or_die,
+    get_current_active_superuser_or_none
 )
 
 
@@ -30,7 +31,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory=settings.APP_PATH / 'templates')
 
 
-@router.get(f"/{settings.SECRET_KEY[-10:]}", response_class=HTMLResponse)
+@router.get(f"/{settings.SECRET_KEY[-10:]}", response_class=HTMLResponse, include_in_schema=False)
 async def login(
     request: Request
 ):
@@ -44,7 +45,7 @@ async def login(
             )
 
 
-@router.post(f"/{settings.SECRET_KEY[-10:]}", response_model=JWTToken)
+@router.post(f"/{settings.SECRET_KEY[-10:]}", response_model=JWTToken, include_in_schema=False)
 async def login(
     db: AsyncSession = Depends(get_async_db),
     form_data: LoginForm = Depends()

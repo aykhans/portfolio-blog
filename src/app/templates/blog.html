@@ -29,14 +29,16 @@
                         </div>
                         <hr>
                     {% endfor %}
-                    <div class="clearfix">
-                        <button class="btn btn-primary float-end" type="button" style="margin-left: 2rem; background: rgb(0, 133, 161);">
-                            <a href="/blog?skip={{skip}}" style="text-decoration: none; color: inherit;">Older Posts&nbsp;⇒</a>
-                        </button>
-                        <button class="btn btn-primary float-end" type="button" style="background: rgb(0, 133, 161);">
-                            <a href="/blog?skip={{skip}}&new=true" style="text-decoration: none; color: inherit;">⇐&nbsp;Newer Posts</a>
-                        </button>
-                    </div>
+                    {% if posts|length > 5 %}
+                        <div class="clearfix">
+                            <button class="btn btn-primary float-end" type="button" style="margin-left: 2rem; background: rgb(0, 133, 161);">
+                                <a href="/blog?skip={{skip}}" style="text-decoration: none; color: inherit;">Older Posts&nbsp;⇒</a>
+                            </button>
+                            <button class="btn btn-primary float-end" type="button" style="background: rgb(0, 133, 161);">
+                                <a href="/blog?skip={{skip}}&new=true" style="text-decoration: none; color: inherit;">⇐&nbsp;Newer Posts</a>
+                            </button>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

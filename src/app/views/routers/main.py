@@ -20,7 +20,11 @@ from app.core.config import settings
 from app.schemas import ListPostInTemplate
 from app.schemas.main import SendEmail
 from app.utils.email_utils import send_email_notification
-from app.views.depends import get_async_db
+from app.models.user import User as UserModel
+from app.views.depends import (
+    get_async_db,
+    get_current_active_superuser_or_none
+)
 
 
 router = APIRouter()
@@ -65,6 +69,7 @@ async def send_email(
 async def blog(
     request: Request,
     db: AsyncSession = Depends(get_async_db),
+    user: UserModel | None = Depends(get_current_active_superuser_or_none),
     skip: Annotated[int, Query(gt=-1)] = 0,
     new: bool = False
 ):
@@ -86,6 +91,7 @@ async def blog(
                 {
                     'request': request,
                     'posts': posts,
-                    'skip': skip
+                    'skip': skip,
+                    'user': user
                 }
             )
