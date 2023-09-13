@@ -1,4 +1,7 @@
-from typing import List
+from typing import (
+    List,
+    Optional
+)
 
 from fastapi.encoders import jsonable_encoder
 
@@ -15,7 +18,11 @@ from app.schemas.post import (
 
 class CRUDPost(CRUDBase[Post, PostCreate, PostUpdate]):
     async def create_with_owner(
-        self, db: Session, *, obj_in: PostCreate, owner_id: int
+        self,
+        db: Session,
+        *,
+        obj_in: PostCreate,
+        owner_id: int
     ) -> Post:
 
         obj_in_data = jsonable_encoder(obj_in)
@@ -26,8 +33,23 @@ class CRUDPost(CRUDBase[Post, PostCreate, PostUpdate]):
 
         return db_obj
 
+    async def get_by_slug(
+        self,
+        db: Session,
+        slug: str
+    ) -> Optional[Post]:
+
+        q = select(self.model).where(self.model.slug == slug)
+        obj = await db.execute(q)
+        return obj.scalar_one_or_none()
+
     async def get_multi_by_owner(
-        self, db: Session, *, owner_id: int, skip: int = 0, limit: int = 100
+        self,
+        db: Session,
+        *,
+        owner_id: int,
+        skip: int = 0,
+        limit: int = 100
     ) -> List[Post]:
 
         q = (

@@ -22,7 +22,7 @@ class Post(Base):
     title = Column(String(100), index=True, nullable=False)
     slug = Column(String(), index=True, nullable=False, unique=True)
     text = Column(String(), index=True, nullable=False)
-    image_path = Column(String(100), index=True, unique=True, nullable=True)
+    image_path = Column(String(100), index=True, unique=True, nullable=False)
     owner_id = Column(Integer(), ForeignKey("user.id"))
 
     owner = relationship("User", back_populates="posts")

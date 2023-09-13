@@ -12,7 +12,7 @@ from app.core.config import settings
 
 
 class PostBase(BaseModel):
-    title: Optional[str] = None
+    title: Optional[str] = Field(max_length=100)
     text: Optional[str] = None
     image_path: Optional[str] = None
 
@@ -23,8 +23,7 @@ class PostCreate(PostBase):
     image_path: str
 
 
-class PostUpdate(PostBase):
-    title: Optional[str] = Field(max_length=100)
+class PostUpdate(PostBase): ...
 
 
 class PostInTemplate(PostBase):
@@ -43,7 +42,7 @@ class PostInDBBase(PostBase):
     slug: str
     title: str
     text: str
-    image_path: str
+    image_path: Optional[str] = None
     owner_id: int
 
     class Config:
@@ -53,7 +52,10 @@ class PostInDBBase(PostBase):
 class Post(PostInDBBase):
     @computed_field
     @property
-    def image_url(self) -> str:
+    def image_url(self) -> str | None:
+        if self.image_path is None:
+            return None
+
         return str(
             settings.MEDIA_FOLDER /
             settings.FILE_FOLDERS['post_images'] /

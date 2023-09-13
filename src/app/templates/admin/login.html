@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Login</title>
-    <link rel="icon" type="image/png" href="static/img/shipit.png">
-    <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="/static/img/shipit.png">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     <script>
         function handleSubmit(event) {
             event.preventDefault();
@@ -60,6 +60,7 @@
                 var now = new Date();
                 now.setDate(now.getDate() + 30);
                 document.cookie = `access_token=${accessToken};expires=${now.toUTCString()};path=/`;
+                window.location.href = window.location.origin;
             })
             .catch(error => {
                 document.getElementById('responseError').innerHTML = error.message;

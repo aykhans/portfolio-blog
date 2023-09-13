@@ -1,7 +1,8 @@
 import io
 from typing import (
     Annotated,
-    Generator
+    Generator,
+    Optional
 )
 
 from PIL import Image
@@ -22,6 +23,7 @@ from fastapi import (
 from fastapi.security import OAuth2PasswordBearer
 
 from app.models.user import User as UserModel
+from app.models.post import Post as PostModel
 from app.core import security
 from app.core.config import settings
 from app.db.session import (
@@ -49,16 +51,23 @@ async def get_async_db() -> Generator:
         yield async_db
 
 
-async def get_access_token_from_cookie_or_die(access_token: Annotated[str, Cookie()]) -> str:
+async def get_access_token_from_cookie_or_die(
+    access_token: Annotated[str, Cookie()]
+) -> str:
     return access_token
 
 
-async def get_access_token_from_cookie_or_none(access_token: Annotated[str, Cookie()] = None) -> str | None:
+async def get_access_token_from_cookie_or_none(
+    access_token: Annotated[str, Cookie()] = None
+) -> str | None:
     return access_token
 
 
 async def get_current_user_or_die(
-    db: AsyncSession = Depends(get_async_db), token: str = Depends(get_access_token_from_cookie_or_die)
+    db: AsyncSession = Depends(get_async_db),
+    token: str = Depends(
+        get_access_token_from_cookie_or_die
+    )
 ) -> UserModel:
 
     try:
@@ -84,7 +93,10 @@ async def get_current_user_or_die(
 
 
 async def get_current_user_or_none(
-    db: AsyncSession = Depends(get_async_db), token: str | None = Depends(get_access_token_from_cookie_or_none)
+    db: AsyncSession = Depends(get_async_db),
+    token: str | None = Depends(
+        get_access_token_from_cookie_or_none
+    )
 ) -> UserModel | None:
 
     if token is None: return None
@@ -150,7 +162,56 @@ async def get_current_active_superuser_or_none(
     return current_user
 
 
-async def handle_image(image: UploadFile = File(...)) -> str:
+async def get_post_by_slug_or_die(
+    slug: str,
+    db: AsyncSession = Depends(get_async_db)
+) -> PostModel:
+
+    post = await crud.post.get_by_slug(db, slug=slug)
+
+    if post is None:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    return post
+
+
+async def handle_post_image_or_die(image: UploadFile) -> str:
+    try:
+        pil_image = Image.open(io.BytesIO(image.file.read()))
+
+        if pil_image.format.lower() not in ['png', 'jpg', 'jpeg']:
+            raise ValueError('Invalid image format')
+
+        unique_image_name = await generate_unique_image_name(
+            path = settings.MEDIA_PATH / settings.FILE_FOLDERS['post_images'],
+            image_name = image.filename,
+            image_format = pil_image.format.lower()
+        )
+
+        await save_image(
+            image = pil_image,
+            image_path = settings.MEDIA_PATH /
+                settings.FILE_FOLDERS['post_images'] /
+                unique_image_name
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail='Invalid image'
+        )
+
+    finally:
+        try:
+            pil_image.close()
+
+        except: ...
+    return str(unique_image_name)
+
+
+async def handle_post_image_or_none(image: UploadFile = None) -> Optional[str]:
+    if image is None: return None
+
     try:
         pil_image = Image.open(io.BytesIO(image.file.read()))
 

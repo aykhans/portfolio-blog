@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Update Post</title>
+    <link rel="icon" type="image/png" href="/static/img/shipit.png">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+    <style>
+        /* CKEditor */
+        #container {
+            width: 1000px;
+            margin: 20px auto;
+        }
+        .ck-editor__editable[role="textbox"] {
+            /* editing area */
+            min-height: 500px;
+        }
+        .ck-content .image {
+            /* block images */
+            max-width: 80%;
+            margin: 20px auto;
+        }
+    </style>
+
+    <div class="container" style="margin-top: 4rem;">
+        <div class="row">
+            <div class="col-md-10 col-lg-6 mx-auto">
+                <form action="/update-post/{{post.slug}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 4.5rem;">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <input value="{{post.title}}" type="text" class="form-control" name="title" id="title" placeholder="Enter title" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+                <form action="/update-post/{{post.slug}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 4.5rem;">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <textarea name="text" required>
+                            {{post.text}}
+                        </textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+                <form action="/update-post/{{post.slug}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 4.5rem;">
+                    <p style="font-size: medium;">Current: <a href="/{{post.image_url}}" target=”_blank”>{{post.image_url}}</a></p>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="post-image">Image</label>
+                        <input type="file" class="form-control-file" name="image" id="post-image">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+            CKEDITOR.replace('text');
+    </script>
+</body>
+
+</html>

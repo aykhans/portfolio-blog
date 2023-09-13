@@ -12,7 +12,7 @@ from app.schemas.post import Post, PostCreate, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.user import User, UserCreate
 from fastapi.responses import FileResponse, HTMLResponse
-from app.views.depends import get_async_db, handle_image
+from app.views.depends import get_async_db, handle_post_image_or_die
 
 from typing import Annotated, Any
 from fastapi.templating import Jinja2Templates
