@@ -1,9 +1,6 @@
-import re
+from bs4 import BeautifulSoup
 
 
 def html2text(html: str) -> str:
-    return re.sub(
-            re.compile('<.*?>'),
-            '',
-            html
-        )
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup.get_text()
