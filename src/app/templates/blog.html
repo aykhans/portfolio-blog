@@ -3,7 +3,7 @@
 {% block title %}Blog{% endblock title %}
 
 {% block content %}
-    <header class="masthead" style="background: url(&quot;static/img/bryan-goff-f7YQo-eYHdM-unsplash.jpg&quot;);">
+    <header class="masthead" style="background: url(&quot;/static/img/bryan-goff-f7YQo-eYHdM-unsplash.jpg&quot;);">
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
@@ -21,11 +21,15 @@
                 <div class="col-md-10 col-lg-8 mx-auto">
                     {% for post in posts %}
                         <div class="post-preview">
-                            <a href="#">
+                            <a href="/blog/{{post.slug}}">
                                 <h2 class="post-title">{{post.title}}</h2>
                                 <h3 class="post-subtitle">{{post.text}}</h3>
                             </a>
-                            <p class="post-meta">Posted at&nbsp;<a href="#">{{post.created_at}}</a></p>
+                            <p class="post-meta"><b>Posted at:</b>&nbsp;{{post.created_at.strftime('%Y-%m-%d %H:%M')}}</p>
+                            {% if user %}
+                                <a href="/update-post/{{post.slug}}" style="text-decoration: none; margin-right: 0.7rem;">Update</a>
+                                <a href="/delete-post/{{post.slug}}" style="text-decoration: none;">Delete</a>
+                            {% endif %}
                         </div>
                         <hr>
                     {% endfor %}
@@ -38,6 +42,11 @@
                                 <a href="/blog?skip={{skip}}&new=true" style="text-decoration: none; color: inherit;">⇐&nbsp;Newer Posts</a>
                             </button>
                         </div>
+                    {% endif %}
+                    {% if user %}
+                        <a href="/add-post" class="btn btn-primary" style="text-decoration: none;">
+                            Add
+                        </a>
                     {% endif %}
                 </div>
             </div>

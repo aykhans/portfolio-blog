@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str
 
+    @property
+    def LOGIN_URL(self) -> str:
+        return self.SECRET_KEY[-10:]
+
     def get_postgres_dsn(self, _async: bool=False) -> PostgresDsn:
         scheme = 'postgresql+asyncpg' if _async else 'postgresql'
 

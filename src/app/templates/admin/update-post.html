@@ -45,7 +45,7 @@
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
                 <form action="/update-post/{{post.slug}}" method="POST" enctype="multipart/form-data" style="margin-bottom: 4.5rem;">
-                    <p style="font-size: medium;">Current: <a href="/{{post.image_url}}" target=”_blank”>{{post.image_url}}</a></p>
+                    <p style="font-size: medium;">Current: <a href="/{{post.image_path}}" target=”_blank”>{{post.image_path}}</a></p>
                     <div class="form-group" style="margin-bottom: 1.5rem;">
                         <label for="post-image">Image</label>
                         <input type="file" class="form-control-file" name="image" id="post-image">

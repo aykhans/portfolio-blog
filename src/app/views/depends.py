@@ -15,7 +15,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import (
     Cookie,
     Depends,
-    File,
     HTTPException,
     UploadFile,
     status

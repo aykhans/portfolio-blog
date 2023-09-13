@@ -19,6 +19,7 @@ from app import crud
 from app.core.config import settings
 from app.schemas import ListPostInTemplate
 from app.schemas.main import SendEmail
+from app.schemas.post import PostDetail
 from app.utils.email_utils import send_email_notification
 from app.models.user import User as UserModel
 from app.views.depends import (
@@ -93,5 +94,29 @@ async def blog(
                     'posts': posts,
                     'skip': skip,
                     'user': user
+                }
+            )
+
+
+@router.get('/blog/{slug}', response_class=HTMLResponse)
+async def blog_post(
+    request: Request,
+    slug: str,
+    db: AsyncSession = Depends(get_async_db)
+):
+
+    post = await crud.post.get_by_slug(db, slug=slug)
+
+    if post is None:
+        return RedirectResponse(
+            str(request.url_for('blog')),
+            status_code=303
+        )
+
+    return templates.TemplateResponse(
+                'post.html',
+                {
+                    'request': request,
+                    'post': PostDetail.model_validate(post)
                 }
             )

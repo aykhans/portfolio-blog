@@ -4,11 +4,14 @@ from pydantic import (
     BaseModel,
     Field,
     PastDatetime,
-    computed_field,
-    TypeAdapter
+    TypeAdapter,
+    field_validator
 )
 
+from app.utils.custom_functions import html2text
+
 from app.core.config import settings
+
 
 
 class PostBase(BaseModel):
@@ -26,23 +29,48 @@ class PostCreate(PostBase):
 class PostUpdate(PostBase): ...
 
 
-class PostInTemplate(PostBase):
+class PostInTemplate(BaseModel):
     title: str
     text: str
     created_at: PastDatetime
+    slug: str
 
     class Config:
         from_attributes = True
 
+    @field_validator('text', mode='after')
+    @classmethod
+    def html_to_text(cls, v: str) -> str:
+        return html2text(v)[:60]
+
 
 ListPostInTemplate = TypeAdapter(list[PostInTemplate])
+
+
+class PostDetail(BaseModel):
+    title: str
+    text: str
+    created_at: PastDatetime
+    image_path: str
+
+    class Config:
+        from_attributes = True
+
+    @field_validator('image_path', mode='after')
+    @classmethod
+    def absolute_image_path(cls, v: str) -> str | None:
+        return str(
+            settings.MEDIA_FOLDER /
+            settings.FILE_FOLDERS['post_images'] /
+            v
+        )
 
 
 class PostInDBBase(PostBase):
     slug: str
     title: str
     text: str
-    image_path: Optional[str] = None
+    image_path: str
     owner_id: int
 
     class Config:
@@ -50,14 +78,11 @@ class PostInDBBase(PostBase):
 
 
 class Post(PostInDBBase):
-    @computed_field
-    @property
-    def image_url(self) -> str | None:
-        if self.image_path is None:
-            return None
-
+    @field_validator('image_path', mode='after')
+    @classmethod
+    def absolute_image_path(cls, v: str) -> str | None:
         return str(
             settings.MEDIA_FOLDER /
             settings.FILE_FOLDERS['post_images'] /
-            self.image_path
+            v
         )

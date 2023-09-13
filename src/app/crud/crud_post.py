@@ -66,4 +66,13 @@ class CRUDPost(CRUDBase[Post, PostCreate, PostUpdate]):
     def create(self):
         raise DeprecationWarning("Use create_with_owner instead")
 
+    async def remove_by_slug(self, db: Session, *, slug: str) -> Post:
+        q = select(self.model).where(self.model.slug == slug)
+        obj = await db.execute(q)
+        obj = obj.scalar_one()
+        await db.delete(obj)
+        await db.commit()
+
+        return obj
+
 post = CRUDPost(Post)

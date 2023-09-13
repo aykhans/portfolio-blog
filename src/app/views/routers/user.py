@@ -1,5 +1,8 @@
 from datetime import timedelta
-from typing import Annotated, Optional
+from typing import (
+    Annotated,
+    Optional
+)
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -46,7 +49,7 @@ templates = Jinja2Templates(directory=settings.APP_PATH / 'templates')
 
 
 @router.get(
-    f"/{settings.SECRET_KEY[-10:]}",
+    f"/{settings.LOGIN_URL}",
     response_class=HTMLResponse,
     include_in_schema=False
 )
@@ -58,13 +61,13 @@ async def login(
                 'admin/login.html',
                 {
                     'request': request,
-                    'login_url': f'/{settings.SECRET_KEY[-10:]}'
+                    'login_url': f'/{settings.LOGIN_URL}'
                 }
             )
 
 
 @router.post(
-    f"/{settings.SECRET_KEY[-10:]}",
+    f"/{settings.LOGIN_URL}",
     response_model=JWTToken,
     include_in_schema=False
 )
@@ -144,7 +147,7 @@ async def get_update_post(
 
     if user is None:
         return RedirectResponse(
-            f'/{settings.SECRET_KEY[-10:]}',
+            f'/{settings.LOGIN_URL}',
             status_code=303
         )
 
@@ -173,7 +176,7 @@ async def update_post(
 
     if user is None:
         return RedirectResponse(
-                f'/{settings.SECRET_KEY[-10:]}',
+                f'/{settings.LOGIN_URL}',
                 status_code=303
             )
 
@@ -199,6 +202,45 @@ async def update_post(
                     'post': PostSchema.model_validate(updated_post)
                 }
             )
+
+
+@router.get('/delete-post/{slug}')
+async def get_delete_post(
+    request: Request,
+    user: UserModel = Depends(get_current_active_superuser_or_die),
+    post: str = Depends(get_post_by_slug_or_die)
+):
+
+    if user.id != post.owner_id:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    return templates.TemplateResponse(
+                'admin/delete-post.html',
+                {
+                    'request': request,
+                    'post': PostSchema.model_validate(post)
+                }
+            )
+
+
+@router.post('/delete-post/{slug}')
+async def delete_post(
+    request: Request,
+    user: UserModel = Depends(get_current_active_superuser_or_die),
+    post: str = Depends(get_post_by_slug_or_die),
+    db: AsyncSession = Depends(get_async_db)
+):
+
+    if user.id != post.owner_id:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    await crud.post.remove_by_slug(db, slug=post.slug)
+
+    return RedirectResponse(
+        str(request.url_for('blog')),
+        status_code=303
+    )
+
 
 @router.get("/admin")
 def admin(
