@@ -53,7 +53,7 @@ templates = Jinja2Templates(directory=settings.APP_PATH / 'templates')
     response_class=HTMLResponse,
     include_in_schema=False
 )
-async def login(
+async def get_login(
     request: Request
 ):
 
