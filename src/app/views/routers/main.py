@@ -22,6 +22,7 @@ from app.schemas.main import SendEmail
 from app.schemas.post import PostDetail
 from app.utils.email_utils import send_email_notification
 from app.models.user import User as UserModel
+from app.utils.rate_limiter import limiter
 from app.views.depends import (
     get_async_db,
     get_current_active_superuser_or_none
@@ -42,6 +43,7 @@ async def home(request: Request):
 
 
 @router.post('/send-email')
+@limiter.limit('2/day')
 async def send_email(
     request: Request,
     background_tasks: BackgroundTasks,
@@ -53,12 +55,15 @@ async def send_email(
             f"phone: {form_data.phone}\n"\
             f"message: {form_data.message}"
 
-    background_tasks.add_task(
-        send_email_notification(
+    email_notification = send_email_notification(
             subject = f"Portfolio Blog (by {form_data.email})",
             body = body
         )
-    )
+
+    if email_notification is not None:
+        background_tasks.add_task(
+            email_notification
+        )
 
     return RedirectResponse(
         str(request.url_for('home')) + '#contact',

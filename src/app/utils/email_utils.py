@@ -13,7 +13,7 @@ from app.core.config import settings
 def send_email_notification(
     subject: str,
     body: str
-) -> partial:
+) -> partial | None:
 
     if settings.EMAIL_RECIPIENTS:
         conf = ConnectionConfig(

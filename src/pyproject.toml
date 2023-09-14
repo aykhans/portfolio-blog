@@ -24,6 +24,7 @@ aiofiles = "^23.2.1"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 fastapi-mail = "^1.4.1"
 beautifulsoup4 = "^4.12.2"
+slowapi = "^0.1.8"
 
 
 [build-system]

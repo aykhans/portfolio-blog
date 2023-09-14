@@ -4,13 +4,18 @@ from fastapi.responses import FileResponse
 
 from pydantic import ValidationError
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
 from app.core.config import settings
 from app.views.router import main_router
+from app.utils.rate_limiter import limiter
 
 
 app = FastAPI(
     title=settings.PROJECT_NAME
 )
+app.state.limiter = limiter
 
 # app.mount(
 #     '/static',
@@ -19,6 +24,9 @@ app = FastAPI(
 # )
 
 app.include_router(main_router)
+
+
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 @app.exception_handler(ValidationError)
