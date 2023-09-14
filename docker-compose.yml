@@ -15,8 +15,8 @@ services:
     env_file:
       - ./config/postgres.env
       - ./config/app.env
-    # ports:
-    #   - 8000
+    ports:
+      - 8000:8000
     depends_on:
       - db
     volumes:
