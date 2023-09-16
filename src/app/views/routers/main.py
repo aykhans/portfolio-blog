@@ -56,8 +56,8 @@ async def send_email(
             f"message: {form_data.message}"
 
     email_notification = send_email_notification(
-            subject = f"Portfolio Blog (by {form_data.email})",
-            body = body
+            subject=f"Portfolio Blog (by {form_data.email})",
+            body=body
         )
 
     if email_notification is not None:

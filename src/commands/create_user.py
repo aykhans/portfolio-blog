@@ -1,6 +1,3 @@
-from sys import path
-path.append('/src')
-
 from contextlib import contextmanager
 from typing import Optional
 

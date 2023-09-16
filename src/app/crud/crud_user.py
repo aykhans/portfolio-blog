@@ -60,7 +60,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db_obj
 
     async def update(
-        self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
+        self,
+        db: Session,
+        *,
+        db_obj: User,
+        obj_in: Union[UserUpdate, Dict[str, Any]]
     ) -> User:
 
         if isinstance(obj_in, dict):
@@ -76,7 +80,9 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
-    async def authenticate(self, db: Session, *, email: str, password: str) -> Optional[User]:
+    async def authenticate(
+        self, db: Session, *, email: str, password: str
+    ) -> Optional[User]:
         user = await self.get_by_email(db, email=email)
 
         if user is None:
@@ -92,5 +98,6 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     async def is_superuser(self, user: User) -> bool:
         return user.is_superuser
+
 
 user = CRUDUser(User)

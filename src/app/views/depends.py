@@ -81,7 +81,7 @@ async def get_current_user_or_die(
             detail="Could not validate credentials",
         )
 
-    if  token_data.sub is None:
+    if token_data.sub is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     user = await crud.user.get_by_email(db, email=token_data.sub)
@@ -98,7 +98,8 @@ async def get_current_user_or_none(
     )
 ) -> UserModel | None:
 
-    if token is None: return None
+    if token is None:
+        return None
 
     try:
         payload = jwt.decode(
@@ -109,7 +110,7 @@ async def get_current_user_or_none(
     except (jwt.JWTError, ValidationError):
         return None
 
-    if  token_data.sub is None:
+    if token_data.sub is None:
         return None
 
     user = await crud.user.get_by_email(db, email=token_data.sub)
@@ -132,7 +133,8 @@ async def get_current_active_user_or_none(
     current_user: UserModel | None = Depends(get_current_user_or_none),
 ) -> UserModel | None:
 
-    if current_user is None: return None
+    if current_user is None:
+        return None
 
     if current_user.is_active is False:
         return None
@@ -154,7 +156,8 @@ async def get_current_active_superuser_or_none(
     current_user: UserModel | None = Depends(get_current_active_user_or_none),
 ) -> UserModel | None:
 
-    if current_user is None: return None
+    if current_user is None:
+        return None
 
     if current_user.is_superuser is False:
         return None
@@ -182,19 +185,19 @@ async def handle_post_image_or_die(image: UploadFile) -> str:
             raise ValueError('Invalid image format')
 
         unique_image_name = await generate_unique_image_name(
-            path = settings.MEDIA_PATH / settings.FILE_FOLDERS['post_images'],
-            image_name = image.filename,
-            image_format = pil_image.format.lower()
+            path=settings.MEDIA_PATH / settings.FILE_FOLDERS['post_images'],
+            image_name=image.filename,
+            image_format=pil_image.format.lower()
         )
 
         await save_image(
-            image = pil_image,
-            image_path = settings.MEDIA_PATH /
-                settings.FILE_FOLDERS['post_images'] /
-                unique_image_name
+            image=pil_image,
+            image_path=settings.MEDIA_PATH /
+            settings.FILE_FOLDERS['post_images'] /
+            unique_image_name
         )
 
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail='Invalid image'
@@ -204,12 +207,14 @@ async def handle_post_image_or_die(image: UploadFile) -> str:
         try:
             pil_image.close()
 
-        except: ...
+        except Exception:
+            ...
     return str(unique_image_name)
 
 
 async def handle_post_image_or_none(image: UploadFile = None) -> Optional[str]:
-    if image is None: return None
+    if image is None:
+        return None
 
     try:
         pil_image = Image.open(io.BytesIO(image.file.read()))
@@ -218,19 +223,19 @@ async def handle_post_image_or_none(image: UploadFile = None) -> Optional[str]:
             raise ValueError('Invalid image format')
 
         unique_image_name = await generate_unique_image_name(
-            path = settings.MEDIA_PATH / settings.FILE_FOLDERS['post_images'],
-            image_name = image.filename,
-            image_format = pil_image.format.lower()
+            path=settings.MEDIA_PATH / settings.FILE_FOLDERS['post_images'],
+            image_name=image.filename,
+            image_format=pil_image.format.lower()
         )
 
         await save_image(
-            image = pil_image,
-            image_path = settings.MEDIA_PATH /
-                settings.FILE_FOLDERS['post_images'] /
-                unique_image_name
+            image=pil_image,
+            image_path=settings.MEDIA_PATH /
+            settings.FILE_FOLDERS['post_images'] /
+            unique_image_name
         )
 
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail='Invalid image'
@@ -240,5 +245,6 @@ async def handle_post_image_or_none(image: UploadFile = None) -> Optional[str]:
         try:
             pil_image.close()
 
-        except: ...
+        except Exception:
+            ...
     return str(unique_image_name)

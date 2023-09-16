@@ -75,4 +75,5 @@ class CRUDPost(CRUDBase[Post, PostCreate, PostUpdate]):
 
         return obj
 
+
 post = CRUDPost(Post)

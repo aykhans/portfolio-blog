@@ -13,7 +13,6 @@ from app.utils.custom_functions import html2text
 from app.core.config import settings
 
 
-
 class PostBase(BaseModel):
     title: Optional[str] = Field(max_length=100)
     text: Optional[str] = None
@@ -26,7 +25,8 @@ class PostCreate(PostBase):
     image_path: str
 
 
-class PostUpdate(PostBase): ...
+class PostUpdate(PostBase):
+    ...
 
 
 class PostInTemplate(BaseModel):

@@ -17,19 +17,19 @@ def send_email_notification(
 
     if settings.EMAIL_RECIPIENTS:
         conf = ConnectionConfig(
-            MAIL_USERNAME = settings.SMTP_USER,
-            MAIL_PASSWORD = settings.SMTP_PASSWORD,
-            MAIL_FROM = settings.SMTP_USER,
-            MAIL_PORT = settings.SMTP_PORT,
-            MAIL_SERVER = settings.SMTP_HOST,
-            MAIL_SSL_TLS = settings.SMTP_SSL_TLS,
-            MAIL_STARTTLS = True
+            MAIL_USERNAME=settings.SMTP_USER,
+            MAIL_PASSWORD=settings.SMTP_PASSWORD,
+            MAIL_FROM=settings.SMTP_USER,
+            MAIL_PORT=settings.SMTP_PORT,
+            MAIL_SERVER=settings.SMTP_HOST,
+            MAIL_SSL_TLS=settings.SMTP_SSL_TLS,
+            MAIL_STARTTLS=True
         )
 
         message = MessageSchema(
-            subject = subject,
-            recipients = settings.EMAIL_RECIPIENTS,
-            body = body,
+            subject=subject,
+            recipients=settings.EMAIL_RECIPIENTS,
+            body=body,
             subtype=MessageType.plain
         )
 

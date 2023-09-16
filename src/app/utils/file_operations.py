@@ -8,5 +8,7 @@ async def mkdir_if_not_exists(path: Path) -> None:
 
 
 def remove_file(file_path: str) -> None:
-    try: remove(file_path)
-    except FileNotFoundError: ...
+    try:
+        remove(file_path)
+    except FileNotFoundError:
+        ...

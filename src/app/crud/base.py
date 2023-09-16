@@ -26,7 +26,7 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
         """
-        CRUD object with default methods to Create, Read, Update, Delete (CRUD).
+        CRUD object with default methods to Create, Read, Update, Delete(CRUD).
 
         **Parameters**
 
@@ -44,7 +44,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self, db: Session, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
 
-        q = select(self.model).offset(skip).limit(limit).order_by(self.model.id.desc())
+        q = (
+            select(self.model).
+            offset(skip).
+            limit(limit).
+            order_by(self.model.id.desc())
+        )
         obj = await db.execute(q)
         return obj.scalars()
 
@@ -52,11 +57,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self, db: Session, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
 
-        q = select(self.model).offset(skip).limit(limit).order_by(self.model.id.desc())
+        q = (
+            select(self.model).
+            offset(skip).
+            limit(limit).
+            order_by(self.model.id.desc())
+        )
         obj = db.execute(q)
         return obj.scalars()
 
-    async def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
+    async def create(
+        self, db: Session, *, obj_in: CreateSchemaType
+    ) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)  # type: ignore
         db.add(db_obj)

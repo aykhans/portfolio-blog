@@ -10,19 +10,26 @@ from pydantic import (
 class Settings(BaseSettings):
     PROJECT_NAME: str = 'FastAPI Portfolio & Blog'
 
-    MAIN_PATH: Path = Path(__file__).resolve().parent.parent.parent # path to src folder
-    APP_PATH: Path = MAIN_PATH / 'app' # path to app folder
-    MEDIA_FOLDER: Path = Path('media') # name of media folder
-    MEDIA_PATH: Path = MAIN_PATH / MEDIA_FOLDER # path to media folder
-    STATIC_FOLDER_NAME: Path = Path('static') # name of static folder
-    STATIC_FOLDER: Path = MAIN_PATH / STATIC_FOLDER_NAME # path to static folder
+    MAIN_PATH: Path = (
+        Path(__file__).
+        resolve().
+        parent.
+        parent.
+        parent
+    )  # path to src folder
+    APP_PATH: Path = MAIN_PATH / 'app'  # path to app folder
+    MEDIA_FOLDER: Path = Path('media')  # name of media folder
+    MEDIA_PATH: Path = MAIN_PATH / MEDIA_FOLDER  # path to media folder
+    STATIC_FOLDER_NAME: Path = Path('static')  # name of static folder
+    STATIC_FOLDER: Path =\
+        MAIN_PATH / STATIC_FOLDER_NAME  # path to static folder
 
     FILE_FOLDERS: dict[str, Path] = {
         'post_images': Path('post_images'),
     }
 
     SECRET_KEY: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 43200 # 30 days
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 43200  # 30 days
 
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -34,7 +41,7 @@ class Settings(BaseSettings):
     def LOGIN_URL(self) -> str:
         return self.SECRET_KEY[-10:]
 
-    def get_postgres_dsn(self, _async: bool=False) -> PostgresDsn:
+    def get_postgres_dsn(self, _async: bool = False) -> PostgresDsn:
         scheme = 'postgresql+asyncpg' if _async else 'postgresql'
 
         return PostgresDsn.build(

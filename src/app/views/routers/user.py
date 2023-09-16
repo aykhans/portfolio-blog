@@ -81,12 +81,17 @@ async def login(
     )
 
     if user is None:
-        raise HTTPException(status_code=400, detail="Incorrect email or password")
+        raise HTTPException(
+            status_code=400,
+            detail="Incorrect email or password"
+        )
 
     elif user.is_active is False:
         raise HTTPException(status_code=400, detail="Inactive user")
 
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
 
     return {
         "access_token": security.create_access_token(
@@ -130,7 +135,9 @@ async def create_post(
         image_path=image
     )
 
-    post = await crud.post.create_with_owner(db, obj_in=obj_in, owner_id=user.id)
+    post = await crud.post.create_with_owner(
+        db, obj_in=obj_in, owner_id=user.id
+    )
 
     return RedirectResponse(
         str(request.url_for('get_update_post', slug=post.slug)),
