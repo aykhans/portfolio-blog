@@ -25,9 +25,16 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 fastapi-mail = "^1.4.1"
 beautifulsoup4 = "^4.12.2"
 slowapi = "^0.1.8"
-flake8 = "^6.1.0"
+ruff = "^0.0.290"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 79
+exclude = ["__pycache__", "__init__.py"]
+
+[tool.ruff.per-file-ignores]
+"app/db/base.py" = ["F401"]

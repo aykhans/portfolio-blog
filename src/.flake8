@@ -1,4 +1,0 @@
-[flake8]
-per-file-ignores = app/db/base.py:F401
-exclude = .git,__pycache__,__init__.py
-max-line-length = 79
