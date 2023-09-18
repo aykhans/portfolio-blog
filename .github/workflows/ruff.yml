@@ -1,0 +1,37 @@
+name: Python Tests with Ruff Linter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
+
+    - name: Install dependencies
+      run: |
+        pip install ruff
+
+    - name: Run Ruff Linter
+      run: |
+        cd src
+        ruff app/
+
+    - name: Upload test coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage.xml
