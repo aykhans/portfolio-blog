@@ -8,9 +8,13 @@ from typing import (
 from PIL import Image
 from jose import jwt
 
-from pydantic import ValidationError
+from pydantic import (
+    ValidationError
+)
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from pymongo import MongoClient
 
 from fastapi import (
     Cookie,
@@ -48,6 +52,11 @@ def get_db() -> Generator:
 async def get_async_db() -> Generator:
     async with AsyncSessionLocal() as async_db:
         yield async_db
+
+
+def get_mongo_client() -> Generator:
+    with MongoClient(str(settings.MONGO_DB_DSN)) as client:
+        yield client
 
 
 async def get_access_token_from_cookie_or_die(
