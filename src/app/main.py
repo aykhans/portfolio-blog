@@ -26,7 +26,7 @@ app.state.limiter = limiter
 app.include_router(main_router)
 
 
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) # test line length
 
 
 @app.exception_handler(ValidationError)
