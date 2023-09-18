@@ -7,6 +7,9 @@ from pydantic import (
     ConfigDict
 )
 
+from sys import path
+path.append('.')
+
 from app import crud
 from app.schemas import UserCreate
 from app.views.depends import get_db
