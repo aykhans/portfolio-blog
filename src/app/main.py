@@ -31,9 +31,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.exception_handler(ValidationError)
 async def validation_exception_handler(request, exc):
-    return await request_validation_exception_handler(request, exc)
+    return await request_validation_exception_handler(request, exc) # Test ruff action
 
 
 @app.exception_handler(404)
 async def custom_404_handler(_, __):
-    return FileResponse(settings.STATIC_FOLDER / '404.jpg') #
+    return FileResponse(settings.STATIC_FOLDER / '404.jpg')
