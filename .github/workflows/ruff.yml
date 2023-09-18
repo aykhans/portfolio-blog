@@ -29,9 +29,3 @@ jobs:
       run: |
         cd src
         ruff app/
-
-    - name: Upload test coverage
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage
-        path: coverage.xml
