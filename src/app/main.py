@@ -36,4 +36,4 @@ async def validation_exception_handler(request, exc):
 
 @app.exception_handler(404)
 async def custom_404_handler(_, __):
-    return FileResponse(settings.STATIC_FOLDER / '404.jpg')
+    return FileResponse(settings.STATIC_FOLDER / '404.jpg') #
