@@ -50,7 +50,7 @@ async def home(request: Request):
 
 
 @router.post('/send-email')
-@limiter.limit('222/day')
+@limiter.limit('2/day')
 async def send_email(
     request: Request,
     background_tasks: BackgroundTasks,
