@@ -8,17 +8,28 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
     env_file:
-      - ./config/postgres.env
+      - ./config/postgres/postgres.env
+
+  mongodb:
+    image: mongo:latest
+    env_file:
+      - ./config/mongodb/mongodb.env
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
 
   app:
     build: ./src/
     env_file:
-      - ./config/postgres.env
-      - ./config/app.env
+      - ./config/postgres/postgres.env
+      - ./config/mongodb/mongodb.env
+      - ./config/app/app.env
     ports:
       - 8000:8000
     depends_on:
       - db
+      - mongodb
     volumes:
       - ./src/app:/src/app
       - static:/src/static
@@ -32,7 +43,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - static:/static
       - media:/media
     depends_on:
@@ -42,3 +53,4 @@ volumes:
   dbdata:
   static:
   media:
+  mongodb_data:
