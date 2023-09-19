@@ -36,7 +36,7 @@ app.include_router(main_router)
 
 @app.on_event('startup')
 async def app_startup():
-    await create_mongodb_database_if_not_exists('logs')
+    await create_mongodb_database_if_not_exists(settings.MONGO_DB_LOGS_NAME)
 
 # -------------------------------- Events end --------------------------------
 

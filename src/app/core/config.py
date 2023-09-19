@@ -72,7 +72,9 @@ class Settings(BaseSettings):
 
     MONGO_INITDB_ROOT_USERNAME: str
     MONGO_INITDB_ROOT_PASSWORD: str
+    MONGO_DB_PORT: int = 27017
     MONGO_DB_LOGS_NAME: str = 'logs'
+    MONGO_DB_DEFAULT_COLLECTION: str = 'init'
 
     @property
     def MONGO_DB_DSN(self) -> MongoDsn:
@@ -81,7 +83,7 @@ class Settings(BaseSettings):
             username=self.MONGO_INITDB_ROOT_USERNAME,
             password=self.MONGO_INITDB_ROOT_PASSWORD,
             host='mongodb',
-            port=27017,
+            port=self.MONGO_DB_PORT,
         )
 
     # ----------------------------- MongoDB End -----------------------------

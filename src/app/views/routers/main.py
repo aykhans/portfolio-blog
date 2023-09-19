@@ -1,4 +1,5 @@
 from typing import Annotated
+import logging
 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import (
@@ -20,8 +21,10 @@ from app.core.config import settings
 from app.schemas import ListPostInTemplate
 from app.schemas.main import SendEmail
 from app.schemas.post import PostDetail
+from app.utils.custom_functions import get_remote_address
 from app.utils.email_utils import send_email_notification
 from app.models.user import User as UserModel
+from app.utils.mongodb_utils import MongoDBLogHandler
 from app.utils.rate_limiter import limiter
 from app.views.depends import (
     get_async_db,
@@ -33,6 +36,10 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory=settings.APP_PATH / 'templates')
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+mongo_db_log_handler = MongoDBLogHandler()
+logger.addHandler(mongo_db_log_handler)
 
 @router.get('/', response_class=HTMLResponse)
 async def home(request: Request):
@@ -43,7 +50,7 @@ async def home(request: Request):
 
 
 @router.post('/send-email')
-@limiter.limit('2/day')
+@limiter.limit('222/day')
 async def send_email(
     request: Request,
     background_tasks: BackgroundTasks,
@@ -54,6 +61,8 @@ async def send_email(
             f"email: {form_data.email}\n"\
             f"phone: {form_data.phone}\n"\
             f"message: {form_data.message}"
+
+    logger.info(body, {'client': get_remote_address(request)})
 
     email_notification = send_email_notification(
             subject=f"Portfolio Blog (by {form_data.email})",
