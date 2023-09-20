@@ -6,7 +6,7 @@
     /src/postgres/postgres.env.example -> /src/postgres/postgres.env
 
 ### 2. Run all services with docker compose
-    docker compose -f docker-compose-dev.yml --build -d
+    docker compose -f docker-compose.yml --build -d
 
 ### Create user
     docker exec -it {container_name} poetry run python3 commands/create_user.py
