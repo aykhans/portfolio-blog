@@ -8,4 +8,4 @@ def html2text(html: str) -> str:
 
 
 def get_remote_address(request: Request) -> str:
-    return request.headers.get('host')
+    return request.headers.get('x-forwarded-for').split(',')[0]
