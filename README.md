@@ -1,9 +1,9 @@
 # Run for development
 
 ### 1. Rename and fill env files
-    /src/app/app.env.example -> /src/app/app.env
-    /src/mongodb/mongodb.env.example -> /src/mongodb/mongodb.env
-    /src/postgres/postgres.env.example -> /src/postgres/postgres.env
+    /config/app/app.env.example -> /src/app/app.env
+    /config/mongodb/mongodb.env.example -> /src/mongodb/mongodb.env
+    /config/postgres/postgres.env.example -> /src/postgres/postgres.env
 
 ### 2. Run all services with docker compose
     docker compose up --build -d
